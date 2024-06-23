@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       IMG_URL:    
-        description: 'Enter the IMG URL'
+        description: 'IMG_URL'
         required: true
         default: ''
 
@@ -14,33 +14,34 @@ jobs:
     runs-on: ubuntu-20.04
     
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v2
+    - name: Check Out
+      uses: actions/checkout@main
       
-    - name: Set Up Environment
+    - name: Prepare the environment
       run: |
-        sudo apt-get update
-        sudo apt-get install -y python python3 python3-pip cpio wget
+        sudo apt update
+        sudo apt -y install python python3 python3-pip cpio wget
         pip3 install twrpdtgen
-        mkdir device_tree
+        mkdir dt
       
-    - name: Download Image
+    - name: Download boot or recovery img
       run: |
-        aria2c -x 16 "${{ github.event.inputs.IMG_URL }}"
+        aria2c "${{ github.event.inputs.IMG_URL }}"
         ls
       
-    - name: Generate Device Tree
+    - name: Start build
       run: |
-        python3 -m twrpdtgen device_tree/*.img
-    - name: Compress Device Tree
+        python3 -m twrpdtgen -o ./dt/ *.img
+    - name: ZIP device tree
       run: |
-        zip -r DeviceTree.zip device_tree
-    - name: Create Release
+        zip -r DeviceTree.zip ./dt
+    - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
-        files: DeviceTree.zip
+        files: |
+          ./DeviceTree.zip
         name: TWRP_Device_Tree-${{ github.run_id }}
         tag_name: ${{ github.run_id }}
-        body: 'Device Tree for TWRP'
+        body: DeviceTree for twrp
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
