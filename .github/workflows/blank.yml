@@ -23,9 +23,13 @@ jobs:
         sudo apt -y install python python3 python3-pip cpio wget
         pip3 install twrpdtgen
         mkdir dt   
+    - name: Download recovery img
+      run: |
+        aria2c "${{ github.event.inputs.IMG_URL }}"
+        ls
     - name: Start build
       run: |
-        python3 -m twrpdtgen recovery.img
+        python3 -m twrpdtgen -o dt/recovery.img
     - name: ZIP device tree
       run: |
         zip -r DeviceTree.zip ./dt
