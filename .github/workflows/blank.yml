@@ -29,7 +29,7 @@ jobs:
         ls
     - name: Start build
       run: |
-        python3 -m twrpdtgen dt/recovery.img
+        python3 -m twrpdtgen -o recovery.img ./dt
     - name: ZIP device tree
       run: |
         zip -r DeviceTree.zip ./dt
