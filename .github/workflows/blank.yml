@@ -31,7 +31,6 @@ jobs:
       
     - name: Start build
       run: |
-        mkdir dt
         python3 -m twrpdtgen -o ./dt/ *.img
     - name: ZIP device tree
       run: |
