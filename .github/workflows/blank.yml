@@ -28,7 +28,7 @@ jobs:
         python3 -m twrpdtgen recovery.img
     - name: ZIP device tree
       run: |
-        zip -r DeviceTree.zip
+        zip -r DeviceTree.zip ./dt
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       with:
